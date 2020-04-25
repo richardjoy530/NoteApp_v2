@@ -51,10 +51,13 @@ class _MainPageState extends State<MainPage>
       child: Scaffold(
         body: Column(
           children: <Widget>[
+            SizedBox(
+              height: 30,
+            ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 50, 8, 8),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
               child: ListTile(
-                leading: GFAvatar(
+                trailing: GFAvatar(
                     size: GFSize.SMALL,
                     backgroundImage: AssetImage('images/avatar.png'),
                     shape: GFAvatarShape.standard),
@@ -65,7 +68,7 @@ class _MainPageState extends State<MainPage>
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
-                trailing: IconButton(icon: Icon(Icons.menu), onPressed: null),
+                leading: IconButton(icon: Icon(Icons.menu), onPressed: null),
               ),
             ),
             Container(
@@ -84,7 +87,7 @@ class _MainPageState extends State<MainPage>
             TabBar(
               labelStyle: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               labelColor: Colors.black,
-              indicatorColor: Colors.blueGrey,
+              indicatorColor: Color(0xff3f79fe),
               indicatorSize: TabBarIndicatorSize.label,
               indicatorWeight: 2,
               unselectedLabelStyle: TextStyle(fontSize: 17),
@@ -103,8 +106,64 @@ class _MainPageState extends State<MainPage>
                         itemBuilder: (context, index) {
                           return Center(
                             child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Card(
+                                color: Color(0xffeff3f8),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                  child: ListTile(
+                                    onTap: null,
+                                    title: Text(
+                                      carouselList[index],
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      'This is my debut shot at dribbble and I\'m really glad I got here. This shot is dedicated to notes for your phone in bright blue tones.'
+                                      'What do you think about it?',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    trailing: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          '8:45',
+                                          style: TextStyle(
+                                              color: Colors.blueGrey,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Icon(
+                                          Icons.card_travel,
+                                          color: Color(0xff3f79fe),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: carouselList.length,
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Center(
+                            child: Padding(
                               padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                               child: Card(
+                                color: Color(0xffeff3f8),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
                                 child: Center(
@@ -133,11 +192,7 @@ class _MainPageState extends State<MainPage>
                       ),
                     ),
                   ),
-                  Tab(
-                    child: ListTile(
-                      title: Text('Buy Tickets'),
-                    ),
-                  ),
+                  //TODO Team Notes
                   Tab(
                     child: ListTile(
                       title: Text('Buy Tickets'),
@@ -145,9 +200,31 @@ class _MainPageState extends State<MainPage>
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 8.0, 15, 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              FloatingActionButton.extended(
+                backgroundColor: Color(0xff3f79fe),
+                heroTag: 'hero1',
+                label: Text('Category'),
+                icon: Icon(Icons.add),
+                onPressed: () {},
+              ),
+              FloatingActionButton.extended(
+                backgroundColor: Color(0xff3f79fe),
+                label: Text('Note'),
+                icon: Icon(Icons.add),
+                onPressed: () {},
+              )
+            ],
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
