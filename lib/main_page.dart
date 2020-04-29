@@ -5,6 +5,7 @@ import 'package:getflutter/getflutter.dart';
 import 'package:noteappv2/add_edit_note.dart';
 import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
+import 'package:noteappv2/show_note.dart';
 
 import 'data.dart';
 
@@ -152,12 +153,14 @@ class _MainPageState extends State<MainPage>
             ),
             Flexible(
               child: TabBarView(
+                physics: BouncingScrollPhysics(),
                 controller: _tabController,
                 children: <Widget>[
                   Tab(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView.builder(
+                        physics: BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -166,6 +169,33 @@ class _MainPageState extends State<MainPage>
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                               child: ListTile(
+                                onLongPress: () {
+                                  showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      title: Text('Delete Note?'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                            onPressed: () {
+                                              databaseHelper
+                                                  .deleteNote(notes[index].id);
+                                              updateList();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Yes')),
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('No'))
+                                      ],
+                                    ),
+                                  );
+                                },
                                 onTap: () {
                                   note = notes[index];
                                   Navigator.push(
@@ -198,7 +228,7 @@ class _MainPageState extends State<MainPage>
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                      '8:45',
+                                      '${notes[index].dateTime.hour > 12 ? notes[index].dateTime.hour - 12 : notes[index].dateTime.hour}:${notes[index].dateTime.minute}',
                                       style: TextStyle(
                                           color: Colors.blueGrey,
                                           fontWeight: FontWeight.bold),
@@ -340,7 +370,12 @@ class MainTile extends StatelessWidget {
         borderRadius: 10,
         curveType: CurveType.concave,
         child: ListTile(
-          onTap: null,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ShowNotes()),
+            );
+          },
           title: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,

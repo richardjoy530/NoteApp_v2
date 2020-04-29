@@ -6,9 +6,12 @@ class Note {
   int starred;
   String title;
   String text;
+  DateTime dateTime;
   Category category;
 
-  Note(this.title, this.text, this.category, {this.starred = 0});
+  Note(this.title, this.text, this.category, {this.starred = 0}) {
+    this.dateTime = DateTime.now();
+  }
 
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
@@ -20,7 +23,7 @@ class Note {
     map['title'] = title;
     map['text'] = text;
     map['category'] = category.name;
-
+    map['date'] = dateTime.toIso8601String();
     return map;
   }
 }

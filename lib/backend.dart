@@ -35,19 +35,16 @@ class PinData {
 
   Future<int> getPinEnable() async {
     pinEnable = (_prefs.getInt('pinEnable') ?? 0);
-    print(['PinEnable value ', pinEnable]);
     return pinEnable;
   }
 
   Future<String> getPin() async {
     pin = (_prefs.getString('pin') ?? '');
-    print(['Pin is', pin]);
     return pin;
   }
 
   void setPinEnable(int value) async {
     _prefs.setInt('pinEnable', value);
-    print(['Setting PinEnable value ', value]);
   }
 
   void setPin(String value) async {
@@ -64,6 +61,7 @@ class DatabaseHelper {
   String colStarred = 'starred';
   String colTitle = 'title';
   String colText = 'text';
+  String dateTime = 'date';
   String colCategory = 'category';
 
   DatabaseHelper._createInstance();
@@ -96,7 +94,7 @@ class DatabaseHelper {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $noteTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colStarred INTEGER, $colCategory TEXT , $colTitle TEXT, $colText TEXT)');
+        'CREATE TABLE $noteTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colStarred INTEGER, $colCategory TEXT , $colTitle TEXT, $colText TEXT, $dateTime TEXT)');
   }
 
   Future<List<Map<String, dynamic>>> getNoteMapList() async {
@@ -110,7 +108,6 @@ class DatabaseHelper {
   Future<int> insertNote(Note note) async {
     Database db = await this.database;
     var result = await db.insert(noteTable, note.toMap());
-    print(['In insert function : Id = ', note.id]);
     return result;
   }
 
@@ -155,6 +152,7 @@ class DatabaseHelper {
       temp.starred = noteMapList[i]['starred'];
       temp.title = noteMapList[i]['title'];
       temp.text = noteMapList[i]['text'];
+      temp.dateTime = DateTime.parse(noteMapList[i]['date']);
       temp.category.name = noteMapList[i]['category'];
       temp.category.color = getCategoryColor(temp.category.name, prefs);
       noteList.add(temp);
