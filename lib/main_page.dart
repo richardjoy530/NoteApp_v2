@@ -9,6 +9,7 @@ import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_downloader/image_downloader.dart';
 
 import 'data.dart';
 
@@ -40,13 +41,18 @@ class _MainPageState extends State<MainPage>
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
-  var name='';
+  var name='Sir';
   Future<FirebaseUser> _handleSignIn() async
   {
-     googleUser = await _googleSignIn.signIn();
-
+    googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-     name=googleUser.displayName;
+    name=googleUser.displayName;
+    print('name is:$name');
+    print(googleUser.photoUrl);
+    var imageId = await ImageDownloader.downloadImage("https://lh3.googleusercontent.com/a-/AOh14GjffxVzYR4Sb97ls54UetaFkxj0Dukcw2wbyrDmkA=s96-c");
+    print('image id is :$imageId');
+    var path = await ImageDownloader.findPath(imageId);
+    print('pic path:$path');
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -446,7 +452,7 @@ class _MainPageState extends State<MainPage>
             color: myTheme.mainAccentColor,
           ),
 
-          title: Text('Backup'),
+          title: Text('Cloud'),
           onTap: (){
             setState(() {
               _handleSignIn();
