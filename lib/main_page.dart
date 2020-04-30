@@ -20,6 +20,7 @@ List<String> categoryNameList = [];
 List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
+String profilePicURL;
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -157,8 +158,6 @@ class _MainPageState extends State<MainPage>
                           curve: Curves.easeInOut);
                       //_onMenuPressed(context);
                     }),
-
-
                 Text(
                   'Hi '+googleUser.displayName,
                   style: TextStyle(
@@ -438,10 +437,9 @@ class _MainPageState extends State<MainPage>
         ),
         ListTile(
           leading: Icon(
-            Icons.cloud_upload,
+            Icons.sync,
             color: myTheme.mainAccentColor,
           ),
-
           title: Text('Backup'),
           onTap: (){
             setState(() {
@@ -656,6 +654,11 @@ class _MainPageState extends State<MainPage>
   }
 
   Future<void> addCategoryNameColor(String name, Color color) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(name, getStringColor(color));
+  }
+
+  Future<void> getProfilePicURL(String name, Color color) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, getStringColor(color));
   }
