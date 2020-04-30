@@ -39,11 +39,10 @@ class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  GoogleSignInAccount googleUser;
   Future<FirebaseUser> _handleSignIn() async
   {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    print('signed in data $googleUser');
+     googleUser = await _googleSignIn.signIn();
 
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
@@ -161,7 +160,7 @@ class _MainPageState extends State<MainPage>
 
 
                 Text(
-                  "Bruce Wayne",
+                  'Hi '+googleUser.displayName,
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
