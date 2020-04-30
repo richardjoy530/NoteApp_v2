@@ -7,6 +7,8 @@ import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'data.dart';
 
@@ -28,12 +30,32 @@ class MyTheme {
 MyTheme myTheme = MyTheme();
 
 class MainPage extends StatefulWidget {
+
+
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  GoogleSignInAccount googleUser;
+  Future<FirebaseUser> _handleSignIn() async
+  {
+     googleUser = await _googleSignIn.signIn();
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    print("signed in " + user.displayName);
+    return user;
+  }
   PageController pageController;
   TabController _tabController;
 //  static List<String> categoryNameList = [
@@ -65,6 +87,7 @@ class _MainPageState extends State<MainPage>
 
   @override
   void initState() {
+
     updateCategoryList();
     databaseHelper = DatabaseHelper();
     databaseHelper.getNoteList().then((onValue) {
@@ -136,7 +159,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
-                  "Bruce Wayne",
+                  'Hi '+googleUser.displayName,
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -417,7 +440,12 @@ class _MainPageState extends State<MainPage>
             Icons.sync,
             color: myTheme.mainAccentColor,
           ),
-          title: Text('Backup your data '),
+          title: Text('Backup'),
+          onTap: (){
+            setState(() {
+              _handleSignIn();
+            });
+          },
         ),
         ListTile(
           leading: Icon(
