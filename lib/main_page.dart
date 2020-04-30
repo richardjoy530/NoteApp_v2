@@ -418,7 +418,7 @@ class _MainPageState extends State<MainPage>
             Icons.sync,
             color: myTheme.mainAccentColor,
           ),
-          title: Text('Backup your data with'),
+          title: Text('Backup your data '),
         ),
         ListTile(
           leading: Icon(
