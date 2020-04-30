@@ -50,6 +50,7 @@ class _MainPageState extends State<MainPage>
       idToken: googleAuth.idToken,
     );
 
+
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
