@@ -412,6 +412,13 @@ class _MainPageState extends State<MainPage>
         ),
         ListTile(
           leading: Icon(
+            Icons.cloud_upload,
+            color: myTheme.mainAccentColor,
+          ),
+          title: Text('Backup'),
+        ),
+        ListTile(
+          leading: Icon(
             Icons.color_lens,
             color: myTheme.mainAccentColor,
           ),
