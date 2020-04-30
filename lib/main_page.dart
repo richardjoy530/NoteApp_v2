@@ -60,6 +60,7 @@ class _MainPageState extends State<MainPage>
 
     return user;
   }
+
   PageController pageController;
   TabController _tabController;
 //  static List<String> categoryNameList = [
