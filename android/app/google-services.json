@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "84322766384",
+    "firebase_url": "https://team-ae293.firebaseio.com",
+    "project_id": "team-ae293",
+    "storage_bucket": "team-ae293.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84322766384:android:56c9c2f921366561a9e7f5",
+        "android_client_info": {
+          "package_name": "com.example.noteappv2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84322766384-rqtv8gjksi1mqmt5v25iln9p671grlv9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noteappv2",
+            "certificate_hash": "f103819725bea10e13e18a8dda5501f4a4cfea9b"
+          }
+        },
+        {
+          "client_id": "84322766384-nm5vumfms5eh0n75dgqkarko8qvhu8q5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noteappv2",
+            "certificate_hash": "b5d05f5e6860830df43c3a8dfbab936064761074"
+          }
+        },
+        {
+          "client_id": "84322766384-tgsukqln7t8cr7slsfi2h7fgngo2m706.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noteappv2",
+            "certificate_hash": "8d29eb3fb35c4e9ac680bdc62b941812663fab1a"
+          }
+        },
+        {
+          "client_id": "84322766384-f580qp333qks7ikh70s1u3g9avrfmv89.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBGN2JGLvhdSpcDMmpCk6JAGQAjJYh5po"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84322766384-f580qp333qks7ikh70s1u3g9avrfmv89.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
