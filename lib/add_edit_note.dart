@@ -59,6 +59,13 @@ class _AddEditNoteState extends State<AddEditNote> {
   }
 
   @override
+  void dispose() {
+    textEditingController.dispose();
+    titleEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     titleEditingController.text = note.title;
     textEditingController.text = note.text;

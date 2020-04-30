@@ -31,5 +31,5 @@ class Note {
 class Category {
   String name;
   Color color;
-  Category(this.name, {this.color = Colors.blueAccent});
+  Category(this.name, {this.color = Colors.black});
 }

@@ -8,6 +8,13 @@ class AddEditCategory extends StatefulWidget {
 }
 
 class _AddEditCategoryState extends State<AddEditCategory> {
+  TextEditingController categoryTextController = TextEditingController();
+  @override
+  void dispose() {
+    categoryTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -18,11 +25,14 @@ class _AddEditCategoryState extends State<AddEditCategory> {
             ListTile(
               leading: IconButton(
                 icon: Icon(
-                  Icons.arrow_back,
+                  Icons.check,
                   color: myTheme.mainAccentColor,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  if (categoryTextController.text != '') {
+                    newCategory.name = categoryTextController.text;
+                    Navigator.pop(context);
+                  }
                 },
               ),
               trailing: IconButton(
@@ -38,6 +48,7 @@ class _AddEditCategoryState extends State<AddEditCategory> {
             Padding(
               padding: const EdgeInsets.all(20),
               child: TextField(
+                controller: categoryTextController,
                 style: TextStyle(
                     fontFamily: "BalooTamma2",
                     fontSize: 30,
@@ -67,31 +78,41 @@ class _AddEditCategoryState extends State<AddEditCategory> {
                         Icons.lens,
                         color: Color(0xffe26e43),
                       ),
-                      onPressed: null),
+                      onPressed: () {
+                        newCategory.color = Color(0xffe26e43);
+                      }),
                   IconButton(
                       icon: Icon(
                         Icons.lens,
                         color: Color(0xff292e91),
                       ),
-                      onPressed: null),
+                      onPressed: () {
+                        newCategory.color = Color(0xff292e91);
+                      }),
                   IconButton(
                       icon: Icon(
                         Icons.lens,
                         color: Color(0xffa1ffb3),
                       ),
-                      onPressed: null),
+                      onPressed: () {
+                        newCategory.color = Color(0xffa1ffb3);
+                      }),
                   IconButton(
                       icon: Icon(
                         Icons.lens,
                         color: Color(0xffa82654),
                       ),
-                      onPressed: null),
+                      onPressed: () {
+                        newCategory.color = Color(0xffa82654);
+                      }),
                   IconButton(
                       icon: Icon(
                         Icons.lens,
                         color: Color(0xfff9bfda),
                       ),
-                      onPressed: null),
+                      onPressed: () {
+                        newCategory.color = Color(0xfff9bfda);
+                      }),
                 ],
               ),
             )

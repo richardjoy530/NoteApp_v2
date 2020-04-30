@@ -118,7 +118,6 @@ class _ShowNotesState extends State<ShowNotes> {
                           ),
                           subtitle: Text(
                             notes[index].text,
-                            maxLines: 3,
                             style:
                                 TextStyle(color: Colors.blueGrey, fontSize: 20),
                           ),
@@ -126,7 +125,7 @@ class _ShowNotesState extends State<ShowNotes> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                '${notes[index].dateTime.hour > 12 ? notes[index].dateTime.hour - 12 : notes[index].dateTime.hour}:${notes[index].dateTime.minute}',
+                                '${notes[index].dateTime.hour > 12 ? notes[index].dateTime.hour - 12 : notes[index].dateTime.hour}:${notes[index].dateTime.minute} ${notes[index].dateTime.hour > 12 ? 'PM' : 'AM'}',
                                 style: TextStyle(
                                     color: Colors.blueGrey,
                                     fontWeight: FontWeight.bold),

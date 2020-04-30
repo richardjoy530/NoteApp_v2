@@ -163,25 +163,19 @@ class DatabaseHelper {
 
   Color getCategoryColor(String name, SharedPreferences prefs) {
     var colorName;
-    colorName = (prefs.getString(name) ?? 'blue');
+    colorName = (prefs.getString(name) ?? 'black');
     switch (colorName) {
       case 'red':
-        return Colors.redAccent;
+        return Color(0xffe26e43);
       case 'blue':
-        return Colors.blueAccent;
+        return Color(0xff292e91);
       case 'yellow':
-        return Colors.yellowAccent;
+        return Color(0xffa1ffb3);
       case 'green':
-        return Colors.greenAccent;
+        return Color(0xffa82654);
       case 'lightgreen':
-        return Colors.lightGreenAccent;
-      case 'purple':
-        return Colors.purpleAccent;
-      case 'pink':
-        return Colors.pinkAccent;
-      case 'cyan':
-        return Colors.cyanAccent;
+        return Color(0xfff9bfda);
     }
-    return Colors.blueAccent;
+    return Colors.black;
   }
 }
