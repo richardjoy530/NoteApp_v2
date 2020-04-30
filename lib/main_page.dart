@@ -418,7 +418,7 @@ class _MainPageState extends State<MainPage>
             Icons.cloud_upload,
             color: myTheme.mainAccentColor,
           ),
-          title: Text('Backup'),
+          title: Text('Backuped'),
         ),
         ListTile(
           leading: Icon(
