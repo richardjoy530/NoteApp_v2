@@ -433,6 +433,13 @@ class _MainPageState extends State<MainPage>
         ),
         ListTile(
           leading: Icon(
+            Icons.brightness_5,
+            color: myTheme.mainAccentColor,
+          ),
+          title: Text('Brightness'),
+        ),
+        ListTile(
+          leading: Icon(
             Icons.colorize,
             color: myTheme.mainAccentColor,
           ),
