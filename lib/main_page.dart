@@ -85,6 +85,7 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    print('test');
     mainTileNameList = [
           'All Notes',
           'Important',
