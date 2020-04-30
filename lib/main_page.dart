@@ -141,7 +141,6 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-
   Scaffold dashBoard(BuildContext context, double height) {
     print('master');
     print('test master');
@@ -165,6 +164,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
+
                   isSignedIn == 0 ? 'Bruce Wane' : googleUser.displayName,
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
@@ -673,7 +673,6 @@ class _MainPageState extends State<MainPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, getStringColor(color));
   }
-
 
   getIsSignedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
