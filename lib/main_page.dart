@@ -673,7 +673,6 @@ class _MainPageState extends State<MainPage>
     prefs.setString(name, getStringColor(color));
   }
 
-
   getIsSignedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isSignedIn = (prefs.getInt('isSignedIn') ?? 0);
