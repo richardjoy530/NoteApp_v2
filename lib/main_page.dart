@@ -1,14 +1,14 @@
 import 'package:clay_containers/clay_containers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:noteappv2/add_edit_note.dart';
 import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'data.dart';
 
@@ -20,6 +20,7 @@ List<String> categoryNameList = [];
 List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
+int isSignedIn = 0;
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -29,8 +30,6 @@ class MyTheme {
 MyTheme myTheme = MyTheme();
 
 class MainPage extends StatefulWidget {
-
-
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -40,21 +39,28 @@ class _MainPageState extends State<MainPage>
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
-  Future<FirebaseUser> _handleSignIn() async
-  {
-     googleUser = await _googleSignIn.signIn();
+  Future<FirebaseUser> _handleSignIn() async {
+    googleUser = await _googleSignIn.signIn();
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    final FirebaseUser user =
+        (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
+    setState(() {
+      setIsSignedIn(1);
+      getIsSignedIn();
+    });
+
     return user;
   }
+
   PageController pageController;
   TabController _tabController;
 //  static List<String> categoryNameList = [
@@ -86,8 +92,8 @@ class _MainPageState extends State<MainPage>
 
   @override
   void initState() {
-
     updateCategoryList();
+    getIsSignedIn();
     databaseHelper = DatabaseHelper();
     databaseHelper.getNoteList().then((onValue) {
       setState(() {
@@ -157,10 +163,8 @@ class _MainPageState extends State<MainPage>
                           curve: Curves.easeInOut);
                       //_onMenuPressed(context);
                     }),
-
-
                 Text(
-                  'Hi '+googleUser.displayName,
+                  isSignedIn == 0 ? 'Bruce Wane' : googleUser.displayName,
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -170,7 +174,9 @@ class _MainPageState extends State<MainPage>
                 Container(
                   child: GFAvatar(
                       size: GFSize.SMALL,
-                      backgroundImage: AssetImage('images/avatar.png'),
+                      backgroundImage: isSignedIn == 0
+                          ? AssetImage('images/avatar.png')
+                          : NetworkImage(googleUser.photoUrl),
                       shape: GFAvatarShape.standard),
                 ),
                 IconButton(
@@ -414,13 +420,16 @@ class _MainPageState extends State<MainPage>
           leading: Container(
             child: GFAvatar(
                 size: GFSize.SMALL,
-                backgroundImage: AssetImage('images/avatar.png'),
+                backgroundImage: isSignedIn == 0
+                    ? AssetImage('images/avatar.png')
+                    : NetworkImage(googleUser.photoUrl),
                 shape: GFAvatarShape.standard),
           ),
           title:
               Text('Hello,', style: TextStyle(color: myTheme.mainAccentColor)),
-          subtitle:
-              Text('Humans', style: TextStyle(color: myTheme.mainAccentColor)),
+          subtitle: Text(
+              isSignedIn == 0 ? 'Bruce Wane' : googleUser.displayName,
+              style: TextStyle(color: myTheme.mainAccentColor)),
           trailing: IconButton(
               icon: Icon(Icons.arrow_forward_ios),
               onPressed: () {
@@ -438,12 +447,11 @@ class _MainPageState extends State<MainPage>
         ),
         ListTile(
           leading: Icon(
-            Icons.cloud_upload,
+            Icons.sync,
             color: myTheme.mainAccentColor,
           ),
-
-          title: Text('Backup'),
-          onTap: (){
+          title: Text('Sync your data'),
+          onTap: () {
             setState(() {
               _handleSignIn();
             });
@@ -658,6 +666,21 @@ class _MainPageState extends State<MainPage>
   Future<void> addCategoryNameColor(String name, Color color) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, getStringColor(color));
+  }
+
+  Future<void> getProfilePicURL(String name, Color color) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(name, getStringColor(color));
+  }
+
+  getIsSignedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    isSignedIn = (prefs.getInt('isSignedIn') ?? 0);
+  }
+
+  setIsSignedIn(int isSignedIn) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('isSignedIn', isSignedIn);
   }
 
   updateCategoryList() async {
