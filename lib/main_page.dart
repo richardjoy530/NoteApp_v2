@@ -134,6 +134,8 @@ class _MainPageState extends State<MainPage>
                           curve: Curves.easeInOut);
                       //_onMenuPressed(context);
                     }),
+
+
                 Text(
                   "Bruce Wayne",
                   style: TextStyle(
