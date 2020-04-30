@@ -9,8 +9,6 @@ import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'data.dart';
 
@@ -32,8 +30,6 @@ class MyTheme {
 MyTheme myTheme = MyTheme();
 
 class MainPage extends StatefulWidget {
-
-
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -43,11 +39,11 @@ class _MainPageState extends State<MainPage>
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
-  Future<FirebaseUser> _handleSignIn() async
-  {
-     googleUser = await _googleSignIn.signIn();
+  Future<FirebaseUser> _handleSignIn() async {
+    googleUser = await _googleSignIn.signIn();
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
@@ -96,7 +92,6 @@ class _MainPageState extends State<MainPage>
 
   @override
   void initState() {
-
     updateCategoryList();
     getIsSignedIn();
     databaseHelper = DatabaseHelper();
@@ -678,10 +673,6 @@ class _MainPageState extends State<MainPage>
     prefs.setString(name, getStringColor(color));
   }
 
-  Future<void> getProfilePicURL(String name, Color color) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(name, getStringColor(color));
-  }
 
   getIsSignedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
