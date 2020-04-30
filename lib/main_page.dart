@@ -50,7 +50,6 @@ class _MainPageState extends State<MainPage>
       idToken: googleAuth.idToken,
     );
 
-
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
@@ -61,7 +60,6 @@ class _MainPageState extends State<MainPage>
 
     return user;
   }
-
   PageController pageController;
   TabController _tabController;
 //  static List<String> categoryNameList = [
