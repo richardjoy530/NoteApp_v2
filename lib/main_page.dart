@@ -113,7 +113,7 @@ class _MainPageState extends State<MainPage>
   }
 
   Scaffold dashBoard(BuildContext context, double height) {
-    print('master');
+    print('testing1');
     return Scaffold(
       body: Column(
         children: <Widget>[
