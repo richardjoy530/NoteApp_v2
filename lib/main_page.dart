@@ -162,6 +162,7 @@ class _MainPageState extends State<MainPage>
                     }),
 
 
+
                 Text(
                   'Hi '+ name,
                   style: TextStyle(
