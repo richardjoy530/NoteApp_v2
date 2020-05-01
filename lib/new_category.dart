@@ -9,9 +9,13 @@ class AddEditCategory extends StatefulWidget {
 
 class _AddEditCategoryState extends State<AddEditCategory> {
   TextEditingController categoryTextController = TextEditingController();
+  TextEditingController categoryDescriptionController = TextEditingController();
+
   @override
+
   void dispose() {
     categoryTextController.dispose();
+    categoryDescriptionController.dispose();
     super.dispose();
   }
 
