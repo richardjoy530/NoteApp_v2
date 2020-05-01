@@ -1,16 +1,15 @@
+import 'package:cache_image/cache_image.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_downloader/image_downloader.dart';
 import 'package:noteappv2/add_edit_note.dart';
 import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cache_image/cache_image.dart';
 
 import 'data.dart';
 
@@ -23,9 +22,7 @@ List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
 String userName;
-var downloadsDirectory;
-var fileName;
-var propic,Propic;
+String proPicUrl;
 GoogleSignInAccount googleUser;
 
 class MyTheme {
@@ -45,19 +42,17 @@ class _MainPageState extends State<MainPage>
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-
-
-  Future<FirebaseUser> _handleSignIn() async
-  {
+  Future<FirebaseUser> _handleSignIn() async {
     googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    setState(() {
+      setUserName(googleUser.displayName);
+      updateUserName();
+      proFilePic(googleUser.photoUrl);
+      getProPic();
+    });
 
-    setUserName(googleUser.displayName);
-    updateUserName();
-    var imageId = await ImageDownloader.downloadImage(googleUser.photoUrl);
-    profilepic();
-    getpropic();
-    fileName = await ImageDownloader.findName(imageId);
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -103,7 +98,8 @@ class _MainPageState extends State<MainPage>
   void initState() {
     updateCategoryList();
     updateUserName();
-    getpropic();
+    proPicUrl = null;
+    getProPic();
     databaseHelper = DatabaseHelper();
     databaseHelper.getNoteList().then((onValue) {
       setState(() {
@@ -174,7 +170,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
-                  userName!=null?userName:'',
+                  userName != null ? userName : '',
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -184,9 +180,9 @@ class _MainPageState extends State<MainPage>
                 Container(
                   child: GFAvatar(
                       size: GFSize.SMALL,
-                      backgroundImage: Propic==null
-                          ?AssetImage('images/avatar.png')
-                          :CacheImage(Propic),
+                      backgroundImage: proPicUrl == null
+                          ? AssetImage('images/avatar.png')
+                          : CacheImage(proPicUrl),
                       shape: GFAvatarShape.standard),
                 ),
                 IconButton(
@@ -684,14 +680,17 @@ class _MainPageState extends State<MainPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = (prefs.getString('name') ?? 'Your Name');
   }
-  Future<void> getpropic() async
-  {
+
+  Future<void> getProPic() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Propic=(prefs.getString('propic') ?? null);
+    setState(() {
+      proPicUrl = (prefs.getString('proPicUrl') ?? null);
+    });
   }
-  Future<void> profilepic() async {
+
+  Future<void> proFilePic(String proPicUrl) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('propic', propic);
+    prefs.setString('proPicUrl', proPicUrl);
   }
 
   updateCategoryList() async {
