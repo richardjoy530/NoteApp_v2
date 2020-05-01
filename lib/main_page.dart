@@ -1,6 +1,4 @@
-import 'package:cache_image/cache_image.dart';
 import 'package:clay_containers/clay_containers.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +10,7 @@ import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cache_image/cache_image.dart';
 
 import 'data.dart';
 
@@ -26,7 +25,8 @@ Category newCategory = Category('Not Specified');
 String userName;
 var downloadsDirectory;
 var fileName;
-//String imgloc;
+var propic=null,Propic=null;
+GoogleSignInAccount googleUser;
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -44,22 +44,20 @@ class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  GoogleSignInAccount googleUser;
 
-  Future<FirebaseUser> _handleSignIn() async {
+
+
+  Future<FirebaseUser> _handleSignIn() async
+  {
     googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-    downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-    print('download location:$downloadsDirectory');
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
     setUserName(googleUser.displayName);
     updateUserName();
     var imageId = await ImageDownloader.downloadImage(googleUser.photoUrl);
-
+    profilepic();
+    getpropic();
     fileName = await ImageDownloader.findName(imageId);
-    //imgloc=downloadsDirectory;
-    print('image location');
-    //print('image location:$imgloc');
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -175,7 +173,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
-                  userName != null ? userName : '',
+                  userName!=null?userName:'',
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -185,8 +183,9 @@ class _MainPageState extends State<MainPage>
                 Container(
                   child: GFAvatar(
                       size: GFSize.SMALL,
-                      backgroundImage: CacheImage(
-                          'https://www.google.com/url?sa=i&url=https%3A%2F%2Ficonscout.com%2Ficon%2Favatar-380&psig=AOvVaw1E7Mwy_wpd_f4w01pM1Xq4&ust=1588409660201000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCOi8_J6lkukCFQAAAAAdAAAAABAD'),
+                      backgroundImage: Propic==null
+                          ?AssetImage('images/avatar.png')
+                          :CacheImage(Propic),
                       shape: GFAvatarShape.standard),
                 ),
                 IconButton(
@@ -683,6 +682,15 @@ class _MainPageState extends State<MainPage>
   Future<void> updateUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = (prefs.getString('name') ?? 'Your Name');
+  }
+  Future<void> getpropic() async
+  {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Propic=(prefs.getString('propic') ?? null);
+  }
+  Future<void> profilepic() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('propic', propic);
   }
 
   updateCategoryList() async {
