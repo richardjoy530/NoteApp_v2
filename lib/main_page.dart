@@ -25,7 +25,7 @@ Category newCategory = Category('Not Specified');
 String userName;
 var downloadsDirectory;
 var fileName;
-var propic=null,Propic=null;
+var propic,Propic;
 GoogleSignInAccount googleUser;
 
 class MyTheme {
@@ -103,6 +103,7 @@ class _MainPageState extends State<MainPage>
   void initState() {
     updateCategoryList();
     updateUserName();
+    getpropic();
     databaseHelper = DatabaseHelper();
     databaseHelper.getNoteList().then((onValue) {
       setState(() {
