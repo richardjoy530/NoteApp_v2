@@ -35,6 +35,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
+
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
