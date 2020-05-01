@@ -1,6 +1,5 @@
 import 'package:clay_containers/clay_containers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -21,6 +20,7 @@ List<String> categoryNameList = [];
 List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
+String userName = '';
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -39,17 +39,20 @@ class _MainPageState extends State<MainPage>
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
-  var name = 'Sir';
+  var path;
+
   Future<FirebaseUser> _handleSignIn() async {
     googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
-    name = googleUser.displayName;
-    print('name is:$name');
+
+    setUserName(googleUser.displayName);
+    updateUserName();
+    print('name is:$userName');
     print(googleUser.photoUrl);
-    var imageId = googleUser.photoUrl;
+    var imageId = await ImageDownloader.downloadImage(googleUser.photoUrl);
     print('image id is :$imageId');
-    var path = await ImageDownloader.findPath(imageId);
+    path = await ImageDownloader.findPath(imageId);
     print('pic path:$path');
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
@@ -95,6 +98,7 @@ class _MainPageState extends State<MainPage>
   @override
   void initState() {
     updateCategoryList();
+    updateUserName();
     databaseHelper = DatabaseHelper();
     databaseHelper.getNoteList().then((onValue) {
       setState(() {
@@ -143,6 +147,8 @@ class _MainPageState extends State<MainPage>
   }
 
   Scaffold dashBoard(BuildContext context, double height) {
+    print('master');
+    print('test master');
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -163,7 +169,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
-                  'Hi ' + name,
+                  userName != null ? userName : '',
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -660,6 +666,16 @@ class _MainPageState extends State<MainPage>
   Future<void> addCategoryNameColor(String name, Color color) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, getStringColor(color));
+  }
+
+  Future<void> setUserName(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('name', name);
+  }
+
+  Future<void> updateUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName = (prefs.getString('name') ?? 'Your Name');
   }
 
   updateCategoryList() async {
