@@ -1,17 +1,16 @@
 import 'package:clay_containers/clay_containers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_downloader/image_downloader.dart';
 import 'package:noteappv2/add_edit_note.dart';
 import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_downloader/image_downloader.dart';
-import 'package:pic/pic.dart';
-import 'dart:io';
+
 import 'data.dart';
 
 DatabaseHelper databaseHelper;
@@ -22,6 +21,7 @@ List<String> categoryNameList = [];
 List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
+String userName;
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -31,8 +31,6 @@ class MyTheme {
 MyTheme myTheme = MyTheme();
 
 class MainPage extends StatefulWidget {
-
-
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -43,14 +41,15 @@ class _MainPageState extends State<MainPage>
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
   var path;
-  var name='Sir';
 
-  Future<FirebaseUser> _handleSignIn() async
-  {
+  Future<FirebaseUser> _handleSignIn() async {
     googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    name=googleUser.displayName;
-    print('name is:$name');
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    setUserName(googleUser.displayName);
+    updateUserName();
+    print('name is:$userName');
     print(googleUser.photoUrl);
     var imageId = await ImageDownloader.downloadImage(googleUser.photoUrl);
     print('image id is :$imageId');
@@ -61,11 +60,13 @@ class _MainPageState extends State<MainPage>
       idToken: googleAuth.idToken,
     );
 
-    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    final FirebaseUser user =
+        (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
 
     return user;
   }
+
   PageController pageController;
   TabController _tabController;
 //  static List<String> categoryNameList = [
@@ -97,8 +98,8 @@ class _MainPageState extends State<MainPage>
 
   @override
   void initState() {
-
     updateCategoryList();
+    updateUserName();
     databaseHelper = DatabaseHelper();
     databaseHelper.getNoteList().then((onValue) {
       setState(() {
@@ -146,7 +147,6 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-
   Scaffold dashBoard(BuildContext context, double height) {
     print('master');
     print('test master');
@@ -169,11 +169,8 @@ class _MainPageState extends State<MainPage>
                           curve: Curves.easeInOut);
                       //_onMenuPressed(context);
                     }),
-
-
-
                 Text(
-                  'Hi '+ name,
+                  userName,
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -454,9 +451,8 @@ class _MainPageState extends State<MainPage>
             Icons.cloud_upload,
             color: myTheme.mainAccentColor,
           ),
-
           title: Text('Cloud'),
-          onTap: (){
+          onTap: () {
             setState(() {
               _handleSignIn();
             });
@@ -671,6 +667,16 @@ class _MainPageState extends State<MainPage>
   Future<void> addCategoryNameColor(String name, Color color) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, getStringColor(color));
+  }
+
+  Future<void> setUserName(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('name', name);
+  }
+
+  Future<void> updateUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName = (prefs.getString('name') ?? 'Your Name');
   }
 
   updateCategoryList() async {
