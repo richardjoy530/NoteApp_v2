@@ -60,8 +60,6 @@ class _MainPageState extends State<MainPage>
 
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
-    print("signed in " + user.displayName);
-
     return user;
   }
 
@@ -426,13 +424,15 @@ class _MainPageState extends State<MainPage>
           leading: Container(
             child: GFAvatar(
                 size: GFSize.SMALL,
-                backgroundImage: AssetImage('images/avatar.png'),
+                backgroundImage: proPicUrl == null
+                    ? AssetImage('images/avatar.png')
+                    : CacheImage(proPicUrl),
                 shape: GFAvatarShape.standard),
           ),
           title:
               Text('Hello,', style: TextStyle(color: myTheme.mainAccentColor)),
-          subtitle:
-              Text('Humans', style: TextStyle(color: myTheme.mainAccentColor)),
+          subtitle: Text(userName != null ? userName : '',
+              style: TextStyle(color: myTheme.mainAccentColor)),
           trailing: IconButton(
               icon: Icon(Icons.arrow_forward_ios),
               onPressed: () {
