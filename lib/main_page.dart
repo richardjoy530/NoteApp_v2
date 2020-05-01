@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage>
 
     setUserName(googleUser.displayName);
     updateUserName();
-    print('name is:$userName');
+    print('name is  :$userName');
     print(googleUser.photoUrl);
     var imageId = await ImageDownloader.downloadImage(googleUser.photoUrl);
     print('image id is :$imageId');
