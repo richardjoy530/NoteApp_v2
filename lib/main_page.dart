@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_downloader/image_downloader.dart';
 import 'package:noteappv2/add_edit_note.dart';
 import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
@@ -20,7 +21,6 @@ List<String> categoryNameList = [];
 List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
-int isSignedIn = 0;
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -39,12 +39,18 @@ class _MainPageState extends State<MainPage>
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
+  var name = 'Sir';
   Future<FirebaseUser> _handleSignIn() async {
     googleUser = await _googleSignIn.signIn();
-
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
-
+    name = googleUser.displayName;
+    print('name is:$name');
+    print(googleUser.photoUrl);
+    var imageId = googleUser.photoUrl;
+    print('image id is :$imageId');
+    var path = await ImageDownloader.findPath(imageId);
+    print('pic path:$path');
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -53,10 +59,6 @@ class _MainPageState extends State<MainPage>
     final FirebaseUser user =
         (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
-    setState(() {
-      setIsSignedIn(1);
-      getIsSignedIn();
-    });
 
     return user;
   }
@@ -93,7 +95,6 @@ class _MainPageState extends State<MainPage>
   @override
   void initState() {
     updateCategoryList();
-    getIsSignedIn();
     databaseHelper = DatabaseHelper();
     databaseHelper.getNoteList().then((onValue) {
       setState(() {
@@ -142,8 +143,6 @@ class _MainPageState extends State<MainPage>
   }
 
   Scaffold dashBoard(BuildContext context, double height) {
-    print('master');
-    print('test master');
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -164,7 +163,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
-                  isSignedIn == 0 ? 'Bruce Wane' : googleUser.displayName,
+                  'Hi ' + name,
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -174,9 +173,7 @@ class _MainPageState extends State<MainPage>
                 Container(
                   child: GFAvatar(
                       size: GFSize.SMALL,
-                      backgroundImage: isSignedIn == 0
-                          ? AssetImage('images/avatar.png')
-                          : NetworkImage(googleUser.photoUrl),
+                      backgroundImage: AssetImage('images/avatar.png'),
                       shape: GFAvatarShape.standard),
                 ),
                 IconButton(
@@ -420,16 +417,13 @@ class _MainPageState extends State<MainPage>
           leading: Container(
             child: GFAvatar(
                 size: GFSize.SMALL,
-                backgroundImage: isSignedIn == 0
-                    ? AssetImage('images/avatar.png')
-                    : NetworkImage(googleUser.photoUrl),
+                backgroundImage: AssetImage('images/avatar.png'),
                 shape: GFAvatarShape.standard),
           ),
           title:
               Text('Hello,', style: TextStyle(color: myTheme.mainAccentColor)),
-          subtitle: Text(
-              isSignedIn == 0 ? 'Bruce Wane' : googleUser.displayName,
-              style: TextStyle(color: myTheme.mainAccentColor)),
+          subtitle:
+              Text('Humans', style: TextStyle(color: myTheme.mainAccentColor)),
           trailing: IconButton(
               icon: Icon(Icons.arrow_forward_ios),
               onPressed: () {
@@ -447,10 +441,10 @@ class _MainPageState extends State<MainPage>
         ),
         ListTile(
           leading: Icon(
-            Icons.sync,
+            Icons.cloud_upload,
             color: myTheme.mainAccentColor,
           ),
-          title: Text('Sync your data'),
+          title: Text('Cloud'),
           onTap: () {
             setState(() {
               _handleSignIn();
@@ -666,21 +660,6 @@ class _MainPageState extends State<MainPage>
   Future<void> addCategoryNameColor(String name, Color color) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, getStringColor(color));
-  }
-
-  Future<void> getProfilePicURL(String name, Color color) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(name, getStringColor(color));
-  }
-
-  getIsSignedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    isSignedIn = (prefs.getInt('isSignedIn') ?? 0);
-  }
-
-  setIsSignedIn(int isSignedIn) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('isSignedIn', isSignedIn);
   }
 
   updateCategoryList() async {

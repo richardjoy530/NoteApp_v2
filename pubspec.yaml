@@ -31,6 +31,7 @@ dependencies:
   intl: ^0.15.8
   firebase_auth: ^0.16.0
   google_sign_in: ^4.4.4
+  image_downloader: ^0.19.2
 
 dev_dependencies:
   flutter_test:
