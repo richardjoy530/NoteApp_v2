@@ -35,6 +35,7 @@ dependencies:
   pic: ^2.1.41
   downloads_path_provider: ^0.1.0
   strings: ^0.1.2
+  cache_image: "^1.0.5"
 
 dev_dependencies:
   flutter_test:

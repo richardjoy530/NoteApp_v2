@@ -1,4 +1,6 @@
+import 'package:cache_image/cache_image.dart';
 import 'package:clay_containers/clay_containers.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,6 @@ import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 
 import 'data.dart';
 
@@ -45,10 +46,10 @@ class _MainPageState extends State<MainPage>
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
 
-
   Future<FirebaseUser> _handleSignIn() async {
     googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
     downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
     print('download location:$downloadsDirectory');
     setUserName(googleUser.displayName);
@@ -174,7 +175,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
-                  userName!=null?userName:'',
+                  userName != null ? userName : '',
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
@@ -184,7 +185,8 @@ class _MainPageState extends State<MainPage>
                 Container(
                   child: GFAvatar(
                       size: GFSize.SMALL,
-                      backgroundImage: AssetImage('images/avatar.png'),
+                      backgroundImage: CacheImage(
+                          'https://www.google.com/url?sa=i&url=https%3A%2F%2Ficonscout.com%2Ficon%2Favatar-380&psig=AOvVaw1E7Mwy_wpd_f4w01pM1Xq4&ust=1588409660201000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCOi8_J6lkukCFQAAAAAdAAAAABAD'),
                       shape: GFAvatarShape.standard),
                 ),
                 IconButton(
