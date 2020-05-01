@@ -10,7 +10,7 @@ import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:cache_image/cache_image.dart';
 
 import 'data.dart';
 
@@ -25,7 +25,8 @@ Category newCategory = Category('Not Specified');
 String userName;
 var downloadsDirectory;
 var fileName;
-//String imgloc;
+var propic=null,Propic=null;
+GoogleSignInAccount googleUser;
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -43,22 +44,20 @@ class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  GoogleSignInAccount googleUser;
 
 
-  Future<FirebaseUser> _handleSignIn() async {
+
+  Future<FirebaseUser> _handleSignIn() async
+  {
     googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
-    print('download location:$downloadsDirectory');
+
     setUserName(googleUser.displayName);
     updateUserName();
     var imageId = await ImageDownloader.downloadImage(googleUser.photoUrl);
-
+    profilepic();
+    getpropic();
     fileName = await ImageDownloader.findName(imageId);
-    //imgloc=downloadsDirectory;
-    print('image location');
-    //print('image location:$imgloc');
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -184,7 +183,9 @@ class _MainPageState extends State<MainPage>
                 Container(
                   child: GFAvatar(
                       size: GFSize.SMALL,
-                      backgroundImage: AssetImage('images/avatar.png'),
+                      backgroundImage: Propic==null
+                          ?AssetImage('images/avatar.png')
+                          :CacheImage(Propic),
                       shape: GFAvatarShape.standard),
                 ),
                 IconButton(
@@ -681,6 +682,15 @@ class _MainPageState extends State<MainPage>
   Future<void> updateUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userName = (prefs.getString('name') ?? 'Your Name');
+  }
+  Future<void> getpropic() async
+  {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Propic=(prefs.getString('propic') ?? null);
+  }
+  Future<void> profilepic() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('propic', propic);
   }
 
   updateCategoryList() async {
