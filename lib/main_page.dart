@@ -10,6 +10,7 @@ import 'package:noteappv2/backend.dart';
 import 'package:noteappv2/new_category.dart';
 import 'package:noteappv2/show_note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
 
 import 'data.dart';
 
@@ -22,6 +23,9 @@ List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
 String userName;
+var downloadsDirectory;
+var fileName;
+//String imgloc;
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -40,21 +44,21 @@ class _MainPageState extends State<MainPage>
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignInAccount googleUser;
-  var path;
+
 
   Future<FirebaseUser> _handleSignIn() async {
     googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    downloadsDirectory = await DownloadsPathProvider.downloadsDirectory;
+    print('download location:$downloadsDirectory');
     setUserName(googleUser.displayName);
     updateUserName();
-    print('name is  :$userName');
-    print(googleUser.photoUrl);
     var imageId = await ImageDownloader.downloadImage(googleUser.photoUrl);
-    print('image id is :$imageId');
-    path = await ImageDownloader.findPath(imageId);
-    print('pic path:$path');
+
+    fileName = await ImageDownloader.findName(imageId);
+    //imgloc=downloadsDirectory;
+    print('image location');
+    //print('image location:$imgloc');
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
