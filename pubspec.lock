@@ -261,6 +261,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
+  pic:
+    dependency: "direct main"
+    description:
+      name: pic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.41"
   platform:
     dependency: transitive
     description:
