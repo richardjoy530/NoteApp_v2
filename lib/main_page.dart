@@ -147,8 +147,6 @@ class _MainPageState extends State<MainPage>
   }
 
   Scaffold dashBoard(BuildContext context, double height) {
-    print('master');
-    print('test master');
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -371,19 +369,22 @@ class _MainPageState extends State<MainPage>
               label: Text('Category'),
               icon: Icon(Icons.add),
               onPressed: () {
+                newCategory = Category('Not Specified');
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AddEditCategory()),
                 ).then((onValue) {
-                  categoryList.add(newCategory);
-                  categoryNameList.add(newCategory.name);
-                  SharedPreferences.getInstance().then((prefs) {
-                    prefs.setStringList('categoryNameList', categoryNameList);
-                    addCategoryNameColor(newCategory.name, newCategory.color);
-                  });
+                  if (newCategory.name != 'Not Specified') {
+                    categoryList.add(newCategory);
+                    categoryNameList.add(newCategory.name);
+                    SharedPreferences.getInstance().then((prefs) {
+                      prefs.setStringList('categoryNameList', categoryNameList);
+                      addCategoryNameColor(newCategory.name, newCategory.color);
+                    });
 
-                  updateList();
-                  updateCategoryList();
+                    updateList();
+                    updateCategoryList();
+                  }
                 });
               },
             ),
@@ -682,6 +683,7 @@ class _MainPageState extends State<MainPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     categoryNameList =
         (prefs.getStringList('categoryNameList') ?? ['Not Specified']);
+    categoryList = [];
     for (var name in categoryNameList) {
       var color = await getCategoryColor(name);
       setState(() {
