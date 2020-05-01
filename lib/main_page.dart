@@ -21,7 +21,7 @@ List<String> categoryNameList = [];
 List<Note> starredNotes = [];
 Note note = Note('', '', Category('Not Specified'));
 Category newCategory = Category('Not Specified');
-String userName;
+String userName = '';
 
 class MyTheme {
   Color mainAccentColor = Color(0xff3f79fe);
@@ -170,7 +170,7 @@ class _MainPageState extends State<MainPage>
                       //_onMenuPressed(context);
                     }),
                 Text(
-                  userName,
+                  userName != null ? userName : '',
                   style: TextStyle(
                       fontFamily: "BalooTamma2",
                       fontSize: 25,
